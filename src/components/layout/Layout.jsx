@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineMenu, AiOutlineLogout, AiOutlineDown, AiOutlineUser, AiOutlineLock } from 'react-icons/ai';
 import Sidebar from './Sidebar';
-import { logout } from '../store/slices/authSlice';
+import { logout } from '../../store/slices/authSlice';
 import toast from 'react-hot-toast';
 
 export default function Layout({ children, user }) {
@@ -45,7 +45,7 @@ export default function Layout({ children, user }) {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      
+
       // Preserve the state when switching between mobile and desktop
       setSidebarOpen(prev => ({
         mobile: mobile ? false : prev.mobile,
@@ -74,13 +74,13 @@ export default function Layout({ children, user }) {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar 
-        isOpen={isMobile ? sidebarOpen.mobile : sidebarOpen.desktop} 
-        toggleSidebar={toggleSidebar} 
+      <Sidebar
+        isOpen={isMobile ? sidebarOpen.mobile : sidebarOpen.desktop}
+        toggleSidebar={toggleSidebar}
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-md">
-          <div className="flex justify-between items-center px-4 py-3">
+          <div className="flex justify-between items-center px-4 py-2">
             {/* Mobile Hamburger Menu */}
             <button
               onClick={toggleSidebar}
@@ -91,8 +91,8 @@ export default function Layout({ children, user }) {
 
             {/* User Profile with Dropdown */}
             <div className="ml-auto flex items-center">
-              <div 
-                className="flex items-center space-x-3 cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-50" 
+              <div
+                className="flex items-center space-x-3 cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-50"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
@@ -100,18 +100,17 @@ export default function Layout({ children, user }) {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-gray-700 font-medium">{user?.name || 'John Doe'}</span>
-                  <AiOutlineDown 
-                    className={`h-4 w-4 text-gray-500 transform transition-transform duration-200 ${
-                      isDropdownOpen ? 'rotate-180' : ''
-                    }`} 
+                  <AiOutlineDown
+                    className={`h-4 w-4 text-gray-500 transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''
+                      }`}
                   />
                 </div>
               </div>
-              
+
               {/* Dropdown Menu */}
               {isDropdownOpen && (
-                <div 
-                  ref={dropdownRef} 
+                <div
+                  ref={dropdownRef}
                   className="absolute right-4 top-16 w-48 bg-white shadow-lg rounded-lg border border-gray-100 py-1 z-50"
                 >
                   <button
@@ -137,7 +136,7 @@ export default function Layout({ children, user }) {
           <div className="container-fluid mx-auto">
             {children}
           </div>
-          
+
         </main>
         <footer className="bg-white shadow-md p-2 text-right text-gray-600 text-xs">
           &copy; {new Date().getFullYear()} Your Company. All rights reserved.

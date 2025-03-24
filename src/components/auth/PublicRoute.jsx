@@ -3,6 +3,5 @@ import { useSelector } from 'react-redux'
 
 export function PublicRoute() {
  
-
   return <Outlet />
 }

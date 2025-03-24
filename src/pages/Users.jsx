@@ -10,8 +10,8 @@ import {
   FunnelIcon,
   ArrowDownTrayIcon
 } from '@heroicons/react/24/outline';
-import Pagination from '../components/Pagination';
-import TableSkeleton from '../components/TableSkeleton';
+import Pagination from '../components/common/Pagination';
+import TableSkeleton from '../components/common/TableSkeleton';
 
 export default function Users() {
   const [search, setSearch] = useState('');
