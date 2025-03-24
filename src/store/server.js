@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from "./slices/authSlice";
+import { showLoader, hideLoader } from "./slices/loaderSlice";
 import toast from "react-hot-toast";
 
 const baseQuery = fetchBaseQuery({
@@ -14,36 +15,33 @@ const baseQuery = fetchBaseQuery({
 });
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result?.error?.status === 401) {
-    // console.log('sending refresh token')
-    // // send refresh token to get new access token
-    // const refreshResult = await baseQuery('/refresh', api, extraOptions)
-    // console.log(refreshResult)
-    // if (refreshResult?.data) {
-    //     const user = api.getState().auth.user
-    //     // store the new token
-    //     api.dispatch(setCredentials({ ...refreshResult.data, user }))
-    //     // retry the original query with new access token
-    //     result = await baseQuery(args, api, extraOptions)
-    // } else {
-    toast.error("Session Expired. Please login again");
-
-    api.dispatch(logout());
-
-    setTimeout(() => {
-      // window.location.href = "/login";
-      window.location.reload(false);
-    }, 3000);
+  // Only show full-screen loader for non-GET requests
+  const isGetRequest = !args.method || args.method.toUpperCase() === 'GET';
+  
+  if (!isGetRequest) {
+    api.dispatch(showLoader());
   }
-
-  return result;
+  
+  try {
+    let result = await baseQuery(args, api, extraOptions);
+    if (result?.error?.status === 401) {
+      toast.error("Session Expired. Please login again");
+      api.dispatch(logout());
+      setTimeout(() => {
+        window.location.reload(false);
+      }, 3000);
+    }
+    return result;
+  } finally {
+    if (!isGetRequest) {
+      api.dispatch(hideLoader());
+    }
+  }
 };
 
 export const server = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["Admin"],
   reducerPath: "apiSlice",
-
   endpoints: (builder) => ({}),
 });
