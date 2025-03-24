@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import { store } from './store/store';
@@ -10,16 +10,17 @@ import { getAllRoutes } from './config/routes';
 import Dashboard from './pages/dashboard/Dashboard';
 import RequireAuth from './components/auth/RequireAuth';
 
-const token = localStorage.getItem('token');
 
 function AppContent() {
+  
+  const token = localStorage.getItem('token');
   const isLoading = useSelector((state) => state.loader.isLoading);
   const routes = getAllRoutes();
 
   return (
     <>
       {isLoading && <Loader fullScreen />}
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Router>
         <Routes>
           <Route path="/login" element={token ? <Layout><Dashboard /></Layout> : <Login />} />
           <Route

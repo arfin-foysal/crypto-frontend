@@ -166,7 +166,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
             </div>
           )}
         </div>
-        {isOpen && (
+        {/* {isOpen && (
           <button
             onClick={handleLogout}
             className="mt-4 w-full flex items-center justify-center px-4 py-2 text-sm text-gray-600 hover:text-red-600 rounded-lg transition-colors duration-200 hover:bg-gray-50"
@@ -174,7 +174,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
             <AiOutlineLogout className="w-5 h-5" />
             <span className="ml-2">Logout</span>
           </button>
-        )}
+        )} */}
       </div>
     </div>
   );
