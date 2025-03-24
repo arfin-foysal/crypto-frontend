@@ -1,35 +1,42 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import { useAddUserMutation } from '../store/api/apiSlice';
+
+const validationSchema = Yup.object({
+  name: Yup.string()
+    .required('Name is required')
+    .min(2, 'Name must be at least 2 characters'),
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  companyName: Yup.string()
+    .required('Company name is required')
+});
 
 export default function AddUser() {
   const navigate = useNavigate();
   const [addUser] = useAddUserMutation();
-  const [formData, setFormData] = useState({
+
+  const initialValues = {
     name: '',
     email: '',
-    company: { name: '' },
-  });
+    companyName: ''
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await addUser(formData).unwrap();
+      const userData = {
+        name: values.name,
+        email: values.email,
+        company: { name: values.companyName }
+      };
+      await addUser(userData).unwrap();
       navigate('/users');
     } catch (error) {
       console.error('Failed to add user:', error);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'companyName') {
-      setFormData(prev => ({
-        ...prev,
-        company: { ...prev.company, name: value }
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -37,56 +44,74 @@ export default function AddUser() {
     <div>
       <h1 className="text-2xl font-bold mb-6">Add User</h1>
       <div className="bg-white rounded-lg shadow p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Company Name</label>
-            <input
-              type="text"
-              name="companyName"
-              value={formData.company.name}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-              required
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
-            <button
-              type="button"
-              onClick={() => navigate('/users')}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
-              Add User
-            </button>
-          </div>
-        </form>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <Field
+                  type="text"
+                  name="name"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="mt-1 text-sm text-red-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
+                <Field
+                  type="email"
+                  name="email"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="mt-1 text-sm text-red-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Company Name</label>
+                <Field
+                  type="text"
+                  name="companyName"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                />
+                <ErrorMessage
+                  name="companyName"
+                  component="div"
+                  className="mt-1 text-sm text-red-600"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => navigate('/users')}
+                  className="px-3 py-1 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-3 py-1 text-sm bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Adding...' : 'Add User'}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

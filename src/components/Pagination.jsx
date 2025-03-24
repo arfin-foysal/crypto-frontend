@@ -1,40 +1,87 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export default function Pagination({ page, lastPage, setPage }) {
+  const getPageNumbers = () => {
+    const delta = 1; // Reduced to show fewer pages
+    const range = [];
+    const rangeWithDots = [];
+
+    range.push(1);
+    for (let i = page - delta; i <= page + delta; i++) {
+      if (i > 1 && i < lastPage) {
+        range.push(i);
+      }
+    }
+    if (lastPage > 1) {
+      range.push(lastPage);
+    }
+
+    let l;
+    for (let i of range) {
+      if (l) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1);
+        } else if (i - l !== 1) {
+          rangeWithDots.push('...');
+        }
+      }
+      rangeWithDots.push(i);
+      l = i;
+    }
+
+    return rangeWithDots;
+  };
+
   return (
-    <div className="flex justify-between items-center mt-6">
-      <p className="text-gray-700 text-sm">
-        Showing <span className="font-medium">{Math.min((page - 1) * 10 + 1, lastPage * 10)}</span> to 
-        <span className="font-medium">{Math.min(page * 10, lastPage * 10)}</span> of 
-        <span className="font-medium">{lastPage * 10}</span> results
-      </p>
-      <div className="flex space-x-1">
+    <div className="flex justify-end items-center gap-2 py-2 px-4">
+      <div className="text-xs text-gray-500">
+        Page {page} of {lastPage}
+      </div>
+
+      <nav className="flex items-center space-x-1" aria-label="Pagination">
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition disabled:opacity-50 text-gray-600"
           disabled={page === 1}
+          className="p-0.5 rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 
+            disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ChevronLeftIcon className="h-5 w-5" />
+          <ChevronLeftIcon className="h-3 w-3" />
         </button>
-        {[...Array(lastPage)].map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setPage(index + 1)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              page === index + 1 ? 'bg-gray-600 text-white' : 'text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
+
+        <div className="hidden sm:flex space-x-1">
+          {getPageNumbers().map((pageNum, index) => (
+            pageNum === '...' ? (
+              <span
+                key={`dots-${index}`}
+                className="px-1.5 py-0.5 text-xs text-gray-500"
+              >
+                &#8230;
+              </span>
+            ) : (
+              <button
+                key={pageNum}
+                onClick={() => setPage(pageNum)}
+                className={`min-w-[1.5rem] px-1.5 py-0.5 border text-xs font-medium rounded
+                  ${page === pageNum
+                    ? 'bg-blue-500 border-blue-500 text-white'
+                    : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                  }`}
+              >
+                {pageNum}
+              </button>
+            )
+          ))}
+        </div>
+
         <button
-          onClick={() => setPage((prev) => (prev < lastPage ? prev + 1 : prev))}
-          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300 transition disabled:opacity-50 text-gray-600"
+          onClick={() => setPage((prev) => Math.min(prev + 1, lastPage))}
           disabled={page === lastPage}
+          className="p-0.5 rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 
+            disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ChevronRightIcon className="h-5 w-5" />
+          <ChevronRightIcon className="h-3 w-3" />
         </button>
-      </div>
+      </nav>
     </div>
   );
 }
