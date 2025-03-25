@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
+import {
   AiOutlineHome,
   AiOutlineUser,
   AiOutlineShoppingCart,
@@ -12,47 +12,14 @@ import {
   AiOutlineLogout
 } from 'react-icons/ai';
 import { IoIosArrowDropright } from "react-icons/io";
-
-const menuItems = [
-  {
-    title: 'Dashboard',
-    icon: AiOutlineHome,
-    path: '/dashboard',
-  },
-  {
-    title: 'User Management',
-    icon: AiOutlineUser,
-    submenu: [
-      { title: 'All Users', path: '/users' },
-      { title: 'Add User', path: '/users/add' },
-      { title: 'Roles', path: '/users/roles' },
-    ],
-  },
-  {
-    title: 'Products',
-    icon: AiOutlineShoppingCart,
-    submenu: [
-      { title: 'All Products', path: '/products' },
-      { title: 'Add Product', path: '/products/add' },
-      { title: 'Categories', path: '/products/categories' },
-    ],
-  },
-  {
-    title: 'Analytics',
-    icon: AiOutlineBarChart,
-    path: '/analytics',
-  },
-  {
-    title: 'Settings',
-    icon: AiOutlineSetting,
-    path: '/settings',
-  },
-];
+import { menuItems } from '../../config/menuItems';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/slices/authSlice';
 
 function MenuItem({ item, isOpen, activeSubmenu, setActiveSubmenu }) {
   const location = useLocation();
   const Icon = item.icon;
-  const isActive = location.pathname === item.path || 
+  const isActive = location.pathname === item.path ||
     (item.submenu && item.submenu.some(subItem => location.pathname === subItem.path));
   const isSubmenuOpen = activeSubmenu === item.title;
 
@@ -64,11 +31,10 @@ function MenuItem({ item, isOpen, activeSubmenu, setActiveSubmenu }) {
     return (
       <div className="mb-1">
         <button
-          className={`w-full flex items-center justify-between px-4 py-3 text-sm rounded-lg transition-all duration-200 ${
-            isActive 
-              ? 'bg-blue-50 text-blue-600' 
+          className={`w-full flex items-center justify-between px-4 py-3 text-sm rounded-lg transition-all duration-200 ${isActive
+              ? 'bg-blue-50 text-blue-600'
               : 'text-gray-600 hover:bg-gray-50'
-          }`}
+            }`}
           onClick={handleSubmenuClick}
         >
           <div className="flex items-center">
@@ -81,24 +47,21 @@ function MenuItem({ item, isOpen, activeSubmenu, setActiveSubmenu }) {
           </div>
           {isOpen && (
             <AiOutlineDown
-              className={`w-4 h-4 transition-transform duration-300 ${
-                isSubmenuOpen ? 'transform rotate-180' : ''
-              }`}
+              className={`w-4 h-4 transition-transform duration-300 ${isSubmenuOpen ? 'transform rotate-180' : ''
+                }`}
             />
           )}
         </button>
-        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isSubmenuOpen && isOpen ? 'max-h-96 mt-1' : 'max-h-0'
-        }`}>
+        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isSubmenuOpen && isOpen ? 'max-h-96 mt-1' : 'max-h-0'
+          }`}>
           {item.submenu.map((subItem) => (
             <Link
               key={subItem.path}
               to={subItem.path}
-              className={`flex items-center pl-11 pr-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${
-                location.pathname === subItem.path 
-                  ? 'bg-blue-50 text-blue-600' 
+              className={`flex items-center pl-11 pr-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${location.pathname === subItem.path
+                  ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-500 hover:bg-gray-50'
-              }`}
+                }`}
             >
               <IoIosArrowDropright className={location.pathname === subItem.path ? 'text-blue-600' : 'text-gray-400'} />
               <span className="ml-2">{subItem.title}</span>
@@ -112,11 +75,10 @@ function MenuItem({ item, isOpen, activeSubmenu, setActiveSubmenu }) {
   return (
     <Link
       to={item.path}
-      className={`flex items-center px-4 py-3 text-sm rounded-lg transition-all duration-200 mb-1 ${
-        isActive 
-          ? 'bg-blue-50 text-blue-600' 
+      className={`flex items-center px-4 py-3 text-sm rounded-lg transition-all duration-200 mb-1 ${isActive
+          ? 'bg-blue-50 text-blue-600'
           : 'text-gray-600 hover:bg-gray-50'
-      }`}
+        }`}
     >
       <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
       {isOpen && (
@@ -129,18 +91,22 @@ function MenuItem({ item, isOpen, activeSubmenu, setActiveSubmenu }) {
 }
 
 export default function Sidebar({ isOpen, toggleSidebar }) {
+  const dispatch = useDispatch();
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const location = useLocation();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   useEffect(() => {
     setActiveSubmenu(null);
   }, [location.pathname]);
 
   return (
-    <div 
-      className={`bg-white ${
-        isOpen ? 'w-64' : 'w-20'
-      } min-h-screen transition-all duration-300 relative shadow-lg`}
+    <div
+      className={`bg-white ${isOpen ? 'w-64' : 'w-20'
+        } min-h-screen transition-all duration-300 relative shadow-lg`}
     >
       {/* Logo Area */}
       <div className="flex items-center h-16 px-4 border-b">
@@ -172,9 +138,9 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
       <div className="px-3 py-4">
         <nav className="space-y-1">
           {menuItems.map((item) => (
-            <MenuItem 
-              key={item.title} 
-              item={item} 
+            <MenuItem
+              key={item.title}
+              item={item}
               isOpen={isOpen}
               activeSubmenu={activeSubmenu}
               setActiveSubmenu={setActiveSubmenu}
@@ -201,7 +167,10 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
           )}
         </div>
         {isOpen && (
-          <button className="mt-4 w-full flex items-center justify-center px-4 py-2 text-sm text-gray-600 hover:text-red-600 rounded-lg transition-colors duration-200 hover:bg-gray-50">
+          <button
+            onClick={handleLogout}
+            className="mt-4 w-full flex items-center justify-center px-4 py-2 text-sm text-gray-600 hover:text-red-600 rounded-lg transition-colors duration-200 hover:bg-gray-50"
+          >
             <AiOutlineLogout className="w-5 h-5" />
             <span className="ml-2">Logout</span>
           </button>

@@ -3,44 +3,18 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import { store } from './store/store';
-import Layout from './components/Layout';
-import RequireAuth from './components/RequireAuth';
-import Loader from './components/Loader';
-import Users from './pages/Users';
-import AddUser from './pages/AddUser';
-import EditUser from './pages/EditUser';
+import Layout from './components/layout/Layout';
+import Loader from './components/common/Loader';
 import Login from './pages/auth/Login';
-import { menuItems } from './config/menu';
+import { getAllRoutes } from './config/routes';
 import Dashboard from './pages/dashboard/Dashboard';
+import RequireAuth from './components/auth/RequireAuth';
 
 const token = localStorage.getItem('token');
 
-// Map component names to actual components
-const componentMap = {
-  Users,
-  AddUser,
-};
-
-// Helper function to generate routes from menu items
-const generateRoutes = (items) => {
-  return items.flatMap(item => {
-    if (item.submenu) {
-      return generateRoutes(item.submenu);
-    }
-
-    const Element = typeof item.element === 'string'
-      ? componentMap[item.element]
-      : item.element;
-
-    return {
-      path: item.path,
-      element: <Element />
-    };
-  });
-};
-
 function AppContent() {
   const isLoading = useSelector((state) => state.loader.isLoading);
+  const routes = getAllRoutes();
 
   return (
     <>
@@ -54,11 +28,14 @@ function AppContent() {
               <RequireAuth>
                 <Layout>
                   <Routes>
-                    {generateRoutes(menuItems).map(({ path, element }) => (
-                      <Route key={path} path={path} element={element} />
+                    {routes.map(({ path, element: Element }) => (
+                      <Route
+                        key={path}
+                        path={path}
+                        element={<Element />}
+                      />
                     ))}
-                    <Route path="/users/edit/:id" element={<EditUser />} />
-                    <Route path="*" element={generateRoutes(menuItems)[0].element} />
+                    <Route path="*" element={<Dashboard />} />
                   </Routes>
                 </Layout>
               </RequireAuth>

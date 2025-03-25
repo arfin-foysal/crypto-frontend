@@ -1,6 +1,6 @@
 import { useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectCurrentToken } from '../store/slices/authSlice';
+import { selectCurrentToken } from '../../store/slices/authSlice';
 
 export default function RequireAuth({ children }) {
   const token = useSelector(selectCurrentToken);
