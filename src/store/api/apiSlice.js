@@ -16,7 +16,7 @@ export const apiSlice = server.injectEndpoints({
       providesTags: ["Users"],
     }),
     getUserById: builder.query({
-      query: (id) => `/users/${id}`,
+      query: (id) => `/api/users/${id}`,
       providesTags: ["Users"],
     }),
     addUser: builder.mutation({
@@ -42,6 +42,14 @@ export const apiSlice = server.injectEndpoints({
       }),
       invalidatesTags: ["Users"],
     }),
+    updateUserStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: `/users/status/${id}`,
+        method: 'PUT',
+        body: { status }
+      }),
+      invalidatesTags: ['Users']
+    }),
   }),
 });
 
@@ -52,4 +60,5 @@ export const {
   useAddUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  useUpdateUserStatusMutation,
 } = apiSlice;

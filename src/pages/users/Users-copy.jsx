@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useGetApiQuery } from '../store/api/commonSlice';
+import { useGetApiQuery } from '../../store/api/commonSlice';
 import { Link } from 'react-router-dom';
 import { 
   HomeIcon, 
@@ -10,15 +10,16 @@ import {
   FunnelIcon,
   ArrowDownTrayIcon
 } from '@heroicons/react/24/outline';
-import Pagination from '../components/common/Pagination';
-import TableSkeleton from '../components/common/TableSkeleton';
+import Pagination from '../../components/common/Pagination';
+import TableSkeleton from '../../components/common/TableSkeleton';
 
 export default function Users() {
+
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
   const { data: users, isLoading, isError } = useGetApiQuery({ 
-    url: `api/users?page=${page}&search=${search}` 
+    url: `api/users?page=${page}&search=${search}&role=USER&status=PENDING`, 
   });
 
   return (
@@ -93,7 +94,7 @@ export default function Users() {
         <div className="overflow-x-auto">
           {isLoading ? (
             <TableSkeleton 
-              columns={2} 
+              columns={6} 
               rows={5} 
               showActions={true}
               imageColumn={true}
@@ -107,10 +108,22 @@ export default function Users() {
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
+                    Full Name
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Email
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Country
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Balance
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Registration Date
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -120,20 +133,49 @@ export default function Users() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {users?.data?.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                     <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-sm font-medium text-gray-600">
-                          {user.full_name.charAt(0)}
-                        </span>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                          {user.photo ? (
+                            <img src={user.photo} alt={user.full_name} className="h-8 w-8 rounded-full" />
+                          ) : (
+                            <span className="text-sm font-medium text-gray-600">
+                              {user.full_name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
+                        </div>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
-                      </div>
-                    </div>
-                  </td>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">{user.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {user.country?.name || 'N/A'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        user.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
+                        user.status === 'INACTIVE' ? 'bg-red-100 text-red-800' : 
+                        user.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {user.status || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        ${parseFloat(user.balance || 0).toFixed(2)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {new Date(user.created_at).toLocaleString()}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       <div className="flex items-center justify-center space-x-3">

@@ -1,7 +1,12 @@
 import Dashboard from '../pages/dashboard/Dashboard';
-import Users from '../pages/Users';
+
 import AddUser from '../pages/AddUser';
 import EditUser from '../pages/EditUser';
+import Users from '../pages/users/Users';
+import DetailUser from '../pages/users/DetailUser';
+import PendingUsers from '../pages/users/PendingUsers';
+import InactiveUsers from '../pages/users/InactiveUser';
+import Withdraws from '../pages/withdraws/Withdraws';
 
 // Component mapping for string-based references
 const componentMap = {
@@ -19,29 +24,19 @@ export const routes = [
     element: () => <Users />
   },
   {
-    path: '/users/add',
-    element: () => <AddUser />
+    path: '/users/pending',
+    element: () => <PendingUsers />
   },
   {
-    path: '/users/roles',
-    element: () => <h1 className="text-2xl font-bold">Roles</h1>
+    path: '/users/inactive',
+    element: () => <InactiveUsers />
   },
+
   {
-    path: '/products',
-    element: () => <h1 className="text-2xl font-bold">Products</h1>
+    path: '/Withdraw',
+    element: () => <Withdraws />
   },
-  {
-    path: '/products/add',
-    element: () => <h1 className="text-2xl font-bold">Add Product</h1>
-  },
-  {
-    path: '/products/categories',
-    element: () => <h1 className="text-2xl font-bold">Categories</h1>
-  },
-  {
-    path: '/analytics',
-    element: () => <h1 className="text-2xl font-bold">Analytics</h1>
-  },
+  
   {
     path: '/settings',
     element: () => <h1 className="text-2xl font-bold">Settings</h1>
@@ -50,6 +45,11 @@ export const routes = [
   {
     path: '/users/edit/:id',
     element: () => <EditUser />,
+    hideInMenu: true
+  },
+  {
+    path: '/users/:id',
+    element: () => <DetailUser />,
     hideInMenu: true
   }
 ];

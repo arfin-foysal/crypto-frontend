@@ -3,7 +3,8 @@ import {
   AiOutlineUser, 
   AiOutlineShoppingCart, 
   AiOutlineBarChart, 
-  AiOutlineSetting 
+  AiOutlineSetting, 
+  AiOutlineMoneyCollect
 } from 'react-icons/ai';
 
 export const menuItems = [
@@ -21,37 +22,43 @@ export const menuItems = [
         path: '/users',
       },
       { 
-        title: 'Add User', 
-        path: '/users/add',
+        title: 'Pending Users', 
+        path: '/users/pending',
       },
       { 
-        title: 'Roles', 
-        path: '/users/roles',
+        title: 'Inactive Users', 
+        path: '/users/inactive',
       },
+
     ],
   },
+  // {
+  //   title: 'Products',
+  //   icon: AiOutlineShoppingCart,
+  //   submenu: [
+  //     { 
+  //       title: 'All Products', 
+  //       path: '/products',
+  //     },
+  //     { 
+  //       title: 'Add Product', 
+  //       path: '/products/add',
+  //     },
+  //     { 
+  //       title: 'Categories', 
+  //       path: '/products/categories',
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: 'Analytics',
+  //   icon: AiOutlineBarChart,
+  //   path: '/analytics',
+  // },
   {
-    title: 'Products',
-    icon: AiOutlineShoppingCart,
-    submenu: [
-      { 
-        title: 'All Products', 
-        path: '/products',
-      },
-      { 
-        title: 'Add Product', 
-        path: '/products/add',
-      },
-      { 
-        title: 'Categories', 
-        path: '/products/categories',
-      },
-    ],
-  },
-  {
-    title: 'Analytics',
-    icon: AiOutlineBarChart,
-    path: '/analytics',
+    title: 'Withdraws',
+    icon: AiOutlineMoneyCollect,
+    path: '/withdraw',
   },
   {
     title: 'Settings',
