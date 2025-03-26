@@ -4,21 +4,27 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { 
   HomeIcon, 
-  PencilIcon, 
-  TrashIcon, 
+  EyeIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
   PlusIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ArrowDownTrayIcon,
-  EyeIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import Pagination from '../../components/common/Pagination';
 import TableSkeleton from '../../components/common/TableSkeleton';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
-export default function PendingUsers() {
+const USER_STATUS = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  REJECTED: 'REJECTED',
+  SUSPENDED: 'SUSPENDED'
+};
+
+export default function SuspendedUsers() {
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -29,20 +35,60 @@ export default function PendingUsers() {
   const [updateStatus] = useUpdateApiJsonMutation();
 
   const handleStatusUpdate = async (id, newStatus) => {
-    try {
-      await updateStatus({
-        end_point: `api/users/status/${id}`,
-        body: { status: newStatus }
-      }).unwrap();
-      toast.success(`User status updated to ${newStatus}`);
-    } catch (error) {
-      toast.error('Failed to update user status');
+    const statusMessages = {
+      [USER_STATUS.ACTIVE]: 'activate',
+      [USER_STATUS.INACTIVE]: 'deactivate',
+      [USER_STATUS.REJECTED]: 'reject',
+      [USER_STATUS.SUSPENDED]: 'suspend',
+      [USER_STATUS.PENDING]: 'mark as pending'
+    };
+
+    confirmAlert({
+      title: `Confirm Status Change`,
+      message: `Are you sure you want to ${statusMessages[newStatus]} this user?`,
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await updateStatus({
+                end_point: `api/users/status/${id}`,
+                body: { status: newStatus }
+              }).unwrap();
+              toast.success(`User successfully ${statusMessages[newStatus]}d`);
+            } catch (error) {
+              toast.error(`Failed to ${statusMessages[newStatus]} user`);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case USER_STATUS.ACTIVE:
+        return 'bg-green-100 text-green-800';
+      case USER_STATUS.INACTIVE:
+        return 'bg-gray-100 text-gray-800';
+      case USER_STATUS.REJECTED:
+        return 'bg-red-100 text-red-800';
+      case USER_STATUS.SUSPENDED:
+        return 'bg-yellow-100 text-yellow-800';
+      case USER_STATUS.PENDING:
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
-  // Update the query to only include necessary filters
+  // Update the query to fetch SUSPENDED users instead of INACTIVE
   const { data: users, isLoading, isError } = useGetApiQuery({ 
-    url: `api/users?page=${page}&search=${search}&role=USER&status=PENDING${
+    url: `api/users?page=${page}&search=${search}&role=USER&status=SUSPENDED${
       minBalance ? `&minBalance=${minBalance}` : ''}${maxBalance ? `&maxBalance=${maxBalance}` : ''}`, 
   });
 
@@ -71,10 +117,10 @@ export default function PendingUsers() {
             Home
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-700">Pending Users</span>
+          <span className="text-gray-700">Suspended Users</span>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900">Pending User Management</h1>
-        <p className="text-gray-600 mt-1">Manage and review pending user requests</p>
+        <h1 className="text-2xl font-bold text-gray-900">Suspended User Management</h1>
+        <p className="text-gray-600 mt-1">Manage and review suspended user accounts</p>
       </div>
 
       {/* Main Content */}
@@ -288,12 +334,7 @@ export default function PendingUsers() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
-                        user.status === 'INACTIVE' ? 'bg-red-100 text-red-800' : 
-                        user.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(user.status)}`}>
                         {user.status || 'N/A'}
                       </span>
                     </td>
@@ -306,30 +347,26 @@ export default function PendingUsers() {
                         >
                           <EyeIcon className="h-5 w-5" />
                         </Link>
-                        <button
-                          onClick={() => handleStatusUpdate(user.id, 'ACTIVE')}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-                          title="Approve User"
-                        >
-                          <CheckCircleIcon className="h-4 w-4 mr-1" />
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleStatusUpdate(user.id, 'INACTIVE')}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                          title="Reject User"
-                        >
-                          <XCircleIcon className="h-4 w-4 mr-1" />
-                          Reject
-                        </button>
-                        <button
-                          onClick={() => handleStatusUpdate(user.id, 'SUSPENDED')}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700"
-                          title="Suspend User"
-                        >
-                          <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
-                          Suspend
-                        </button>
+                        {user.status === USER_STATUS.SUSPENDED && (
+                          <>
+                            <button
+                              onClick={() => handleStatusUpdate(user.id, USER_STATUS.ACTIVE)}
+                              className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                              title="Activate User"
+                            >
+                              <CheckCircleIcon className="h-4 w-4 mr-1" />
+                              Activate
+                            </button>
+                            <button
+                              onClick={() => handleStatusUpdate(user.id, USER_STATUS.INACTIVE)}
+                              className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700"
+                              title="Deactivate User"
+                            >
+                              <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
+                              Deactivate
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

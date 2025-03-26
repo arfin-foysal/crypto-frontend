@@ -4,16 +4,12 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { 
   HomeIcon, 
-  PencilIcon, 
-  TrashIcon, 
+  EyeIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
   PlusIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ArrowDownTrayIcon,
-  EyeIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import Pagination from '../../components/common/Pagination';
 import TableSkeleton from '../../components/common/TableSkeleton';
@@ -28,7 +24,7 @@ const USER_STATUS = {
   SUSPENDED: 'SUSPENDED'
 };
 
-export default function PendingUsers() {
+export default function RejectedUsers() {
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -90,9 +86,9 @@ export default function PendingUsers() {
     }
   };
 
-  // Update the query to only include necessary filters
+  // Update the query to fetch REJECTED users
   const { data: users, isLoading, isError } = useGetApiQuery({ 
-    url: `api/users?page=${page}&search=${search}&role=USER&status=PENDING${
+    url: `api/users?page=${page}&search=${search}&role=USER&status=REJECTED${
       minBalance ? `&minBalance=${minBalance}` : ''}${maxBalance ? `&maxBalance=${maxBalance}` : ''}`, 
   });
 
@@ -121,10 +117,10 @@ export default function PendingUsers() {
             Home
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-gray-700">Pending Users</span>
+          <span className="text-gray-700">Rejected Users</span>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900">Pending User Management</h1>
-        <p className="text-gray-600 mt-1">Manage and review pending user requests</p>
+        <h1 className="text-2xl font-bold text-gray-900">Rejected User Management</h1>
+        <p className="text-gray-600 mt-1">Manage and review rejected user accounts</p>
       </div>
 
       {/* Main Content */}
@@ -154,7 +150,8 @@ export default function PendingUsers() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
+            
               <Link
                 to="/users/add"
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -162,7 +159,7 @@ export default function PendingUsers() {
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add User
               </Link>
-            </div>
+            </div> */}
           </div>
 
           {/* Filter Panel */}
@@ -350,7 +347,7 @@ export default function PendingUsers() {
                         >
                           <EyeIcon className="h-5 w-5" />
                         </Link>
-                        {user.status === USER_STATUS.PENDING && (
+                        {user.status === USER_STATUS.REJECTED && (
                           <>
                             <button
                               onClick={() => handleStatusUpdate(user.id, USER_STATUS.ACTIVE)}
@@ -361,20 +358,12 @@ export default function PendingUsers() {
                               Activate
                             </button>
                             <button
-                              onClick={() => handleStatusUpdate(user.id, USER_STATUS.REJECTED)}
-                              className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                              title="Reject User"
-                            >
-                              <XCircleIcon className="h-4 w-4 mr-1" />
-                              Reject
-                            </button>
-                            <button
-                              onClick={() => handleStatusUpdate(user.id, USER_STATUS.SUSPENDED)}
-                              className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700"
-                              title="Suspend User"
+                              onClick={() => handleStatusUpdate(user.id, USER_STATUS.PENDING)}
+                              className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                              title="Mark as Pending"
                             >
                               <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
-                              Suspend
+                              Mark Pending
                             </button>
                           </>
                         )}

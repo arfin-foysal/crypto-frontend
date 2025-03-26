@@ -22,12 +22,24 @@ export const menuItems = [
         path: '/users',
       },
       { 
+        title: 'Active Users', 
+        path: '/users/active',
+      },
+      { 
         title: 'Pending Users', 
         path: '/users/pending',
       },
       { 
         title: 'Inactive Users', 
         path: '/users/inactive',
+      },
+      { 
+        title: 'Rejected Users', 
+        path: '/users/rejected',
+      },
+      { 
+        title: 'Suspended Users', 
+        path: '/users/suspended',
       },
 
     ],

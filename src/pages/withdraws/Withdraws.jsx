@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useGetApiQuery, useUpdateApiJsonMutation } from '../../store/api/commonSlice';
-import { Link } from 'react-router-dom';
+import { data, Link } from 'react-router-dom';
 import { 
   HomeIcon, 
   EyeIcon,
@@ -15,12 +15,21 @@ import {
 import Pagination from '../../components/common/Pagination';
 import TableSkeleton from '../../components/common/TableSkeleton';
 import { toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert';
 
 const WITHDRAWAL_STATUS = {
-  APPROVE: 'COMPLETED',
-  REJECT: 'REJECT',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',    
+  REJECTED: 'REJECTED',    
   FAILED: 'FAILED',
   CANCELLED: 'CANCELLED'
+};
+
+const statusMessages = {
+  [WITHDRAWAL_STATUS.APPROVED]: 'approve',
+  [WITHDRAWAL_STATUS.REJECTED]: 'reject',
+  [WITHDRAWAL_STATUS.FAILED]: 'mark as failed',
+  [WITHDRAWAL_STATUS.CANCELLED]: 'cancel'
 };
 
 export default function Withdraws() {
@@ -38,15 +47,30 @@ export default function Withdraws() {
   const [updateStatus] = useUpdateApiJsonMutation();
 
   const handleStatusUpdate = async (id, newStatus) => {
-    try {
-      await updateStatus({
-        end_point: `api/withdraws/status/${id}`,
-        body: { status: newStatus }
-      }).unwrap();
-      toast.success(`Withdrawal status updated to ${newStatus}`);
-    } catch (error) {
-      toast.error('Failed to update withdrawal status');
-    }
+    confirmAlert({
+      title: 'Confirm Status Change',
+      message: `Are you sure you want to ${statusMessages[newStatus]} this withdrawal?`,
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await updateStatus({
+                end_point: `api/withdraws/status/${id}`,
+                body: { status: newStatus }
+              }).unwrap();
+              toast.success(`Withdrawal successfully ${statusMessages[newStatus]}d`);
+            } catch (error) {
+              toast.error(`Failed to ${statusMessages[newStatus]} withdrawal`);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
   };
 
   // Construct API URL with all filters
@@ -61,6 +85,8 @@ export default function Withdraws() {
       endDate ? `&endDate=${endDate}` : ''}`
   });
 
+
+
   const handleClearFilters = () => {
     setStatusFilter('');
     setFeeType('');
@@ -74,15 +100,15 @@ export default function Withdraws() {
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'COMPLETED':
+      case WITHDRAWAL_STATUS.APPROVED:
         return 'bg-green-100 text-green-800';
-      case 'REJECT':
+      case WITHDRAWAL_STATUS.REJECTED:
         return 'bg-red-100 text-red-800';
-      case 'FAILED':
+      case WITHDRAWAL_STATUS.FAILED:
         return 'bg-orange-100 text-orange-800';
-      case 'CANCELLED':
+      case WITHDRAWAL_STATUS.CANCELLED:
         return 'bg-gray-100 text-gray-800';
-      case 'PENDING':
+      case WITHDRAWAL_STATUS.PENDING:
         return 'bg-yellow-100 text-yellow-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -143,9 +169,11 @@ export default function Withdraws() {
                     className="block w-full rounded-md border-gray-300"
                   >
                     <option value="">All Status</option>
-                    <option value="PENDING">Pending</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="REJECTED">Rejected</option>
+                    <option value={WITHDRAWAL_STATUS.PENDING}>Pending</option>
+                    <option value={WITHDRAWAL_STATUS.APPROVED}>Approved</option>
+                    <option value={WITHDRAWAL_STATUS.REJECTED}>Rejected</option>
+                    <option value={WITHDRAWAL_STATUS.FAILED}>Failed</option>
+                    <option value={WITHDRAWAL_STATUS.CANCELLED}>Cancelled</option>
                   </select>
                 </div>
 
@@ -234,7 +262,7 @@ export default function Withdraws() {
             <tbody className="bg-white divide-y divide-gray-200">
               {isLoading ? (
                 <TableSkeleton columns={8} rows={10} />
-              ) : withdrawsData?.data.map((withdraw, index) => (
+              ) : withdrawsData?.data?.data.map((withdraw, index) => (
                 <tr key={withdraw.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {index + 1}
@@ -271,10 +299,10 @@ export default function Withdraws() {
                       >
                         <EyeIcon className="h-5 w-5" />
                       </Link>
-                      {withdraw.status === 'PENDING' && (
+                      {withdraw.status === WITHDRAWAL_STATUS.PENDING && (
                         <>
                           <button
-                            onClick={() => handleStatusUpdate(withdraw.id, WITHDRAWAL_STATUS.APPROVE)}
+                            onClick={() => handleStatusUpdate(withdraw.id, WITHDRAWAL_STATUS.APPROVED)}
                             className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
                             title="Approve Withdrawal"
                           >
@@ -282,7 +310,7 @@ export default function Withdraws() {
                             Approve
                           </button>
                           <button
-                            onClick={() => handleStatusUpdate(withdraw.id, WITHDRAWAL_STATUS.REJECT)}
+                            onClick={() => handleStatusUpdate(withdraw.id, WITHDRAWAL_STATUS.REJECTED)}
                             className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
                             title="Reject Withdrawal"
                           >
@@ -327,3 +355,4 @@ export default function Withdraws() {
     </div>
   );
 }
+  
