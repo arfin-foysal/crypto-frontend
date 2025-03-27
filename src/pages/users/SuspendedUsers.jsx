@@ -20,8 +20,7 @@ const USER_STATUS = {
   PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  REJECTED: 'REJECTED',
-  SUSPENDED: 'SUSPENDED'
+  SUSPENDED: 'SUSPENDED'  // Removed REJECTED
 };
 
 export default function SuspendedUsers() {
@@ -38,9 +37,8 @@ export default function SuspendedUsers() {
     const statusMessages = {
       [USER_STATUS.ACTIVE]: 'activate',
       [USER_STATUS.INACTIVE]: 'deactivate',
-      [USER_STATUS.REJECTED]: 'reject',
       [USER_STATUS.SUSPENDED]: 'suspend',
-      [USER_STATUS.PENDING]: 'mark as pending'
+      [USER_STATUS.PENDING]: 'mark as pending'  // Removed reject message
     };
 
     confirmAlert({
@@ -75,8 +73,6 @@ export default function SuspendedUsers() {
         return 'bg-green-100 text-green-800';
       case USER_STATUS.INACTIVE:
         return 'bg-gray-100 text-gray-800';
-      case USER_STATUS.REJECTED:
-        return 'bg-red-100 text-red-800';
       case USER_STATUS.SUSPENDED:
         return 'bg-yellow-100 text-yellow-800';
       case USER_STATUS.PENDING:

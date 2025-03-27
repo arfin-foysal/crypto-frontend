@@ -20,7 +20,6 @@ const USER_STATUS = {
   PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  REJECTED: 'REJECTED',
   SUSPENDED: 'SUSPENDED'
 };
 
@@ -38,7 +37,6 @@ export default function InactiveUsers() {
     const statusMessages = {
       [USER_STATUS.ACTIVE]: 'activate',
       [USER_STATUS.INACTIVE]: 'deactivate',
-      [USER_STATUS.REJECTED]: 'reject',
       [USER_STATUS.SUSPENDED]: 'suspend',
       [USER_STATUS.PENDING]: 'mark as pending'
     };
@@ -75,8 +73,6 @@ export default function InactiveUsers() {
         return 'bg-green-100 text-green-800';
       case USER_STATUS.INACTIVE:
         return 'bg-gray-100 text-gray-800';
-      case USER_STATUS.REJECTED:
-        return 'bg-red-100 text-red-800';
       case USER_STATUS.SUSPENDED:
         return 'bg-yellow-100 text-yellow-800';
       case USER_STATUS.PENDING:

@@ -22,8 +22,7 @@ const USER_STATUS = {
   PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
-  REJECTED: 'REJECTED',
-  SUSPENDED: 'SUSPENDED'
+  SUSPENDED: 'SUSPENDED'  // Removed REJECTED status
 };
 
 export default function ActiveUsers() {
@@ -40,9 +39,8 @@ export default function ActiveUsers() {
     const statusMessages = {
       [USER_STATUS.ACTIVE]: 'activate',
       [USER_STATUS.INACTIVE]: 'deactivate',
-      [USER_STATUS.REJECTED]: 'reject',
       [USER_STATUS.SUSPENDED]: 'suspend',
-      [USER_STATUS.PENDING]: 'mark as pending'
+      [USER_STATUS.PENDING]: 'mark as pending'  // Removed reject message
     };
 
     confirmAlert({
@@ -77,8 +75,6 @@ export default function ActiveUsers() {
         return 'bg-green-100 text-green-800';
       case USER_STATUS.INACTIVE:
         return 'bg-gray-100 text-gray-800';
-      case USER_STATUS.REJECTED:
-        return 'bg-red-100 text-red-800';
       case USER_STATUS.SUSPENDED:
         return 'bg-yellow-100 text-yellow-800';
       case USER_STATUS.PENDING:
@@ -364,14 +360,6 @@ export default function ActiveUsers() {
                         >
                           <ExclamationTriangleIcon className="h-4 w-4 mr-1" />
                           Suspend
-                        </button>
-                        <button
-                          onClick={() => handleStatusUpdate(user.id, USER_STATUS.REJECTED)}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-                          title="Reject User"
-                        >
-                          <XCircleIcon className="h-4 w-4 mr-1" />
-                          Reject
                         </button>
                       </div>
                     </td>

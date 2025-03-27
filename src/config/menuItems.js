@@ -33,10 +33,7 @@ export const menuItems = [
         title: 'Inactive Users', 
         path: '/users/inactive',
       },
-      { 
-        title: 'Rejected Users', 
-        path: '/users/rejected',
-      },
+    
       { 
         title: 'Suspended Users', 
         path: '/users/suspended',

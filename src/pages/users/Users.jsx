@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useGetApiQuery } from '../../store/api/commonSlice';
+import { useGetApiQuery } from '@/store/api/commonSlice';
 import { Link } from 'react-router-dom';
 import { 
   HomeIcon, 

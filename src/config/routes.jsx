@@ -7,7 +7,6 @@ import DetailUser from '../pages/users/DetailUser';
 import PendingUsers from '../pages/users/PendingUsers';
 import InactiveUsers from '../pages/users/InactiveUser';
 import Withdraws from '../pages/withdraws/Withdraws';
-import RejectedUsers from '../pages/users/RejectedUsers';
 import SuspendedUsers from '../pages/users/SuspendedUsers';
 import ActiveUsers from '../pages/users/ActiveUsers';
 
@@ -38,10 +37,7 @@ export const routes = [
     path: '/users/inactive',
     element: () => <InactiveUsers />
   },
-  {
-    path: '/users/rejected',
-    element: () => <RejectedUsers/>
-  },
+
   {
     path: '/users/suspended',
     element: () => <SuspendedUsers />
