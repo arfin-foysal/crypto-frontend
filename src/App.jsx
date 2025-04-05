@@ -11,10 +11,12 @@ import Dashboard from './pages/dashboard/Dashboard';
 import RequireAuth from './components/auth/RequireAuth';
 
 
+
 function AppContent() {
   
   const token = localStorage.getItem('token');
   const isLoading = useSelector((state) => state.loader.isLoading);
+  const user=useSelector((state) => state.auth.user);
   const routes = getAllRoutes();
 
   return (
@@ -27,7 +29,7 @@ function AppContent() {
             path="/*"
             element={
               <RequireAuth>
-                <Layout>
+                <Layout user={user}>
                   <Routes>
                     {routes.map(({ path, element: Element }) => (
                       <Route

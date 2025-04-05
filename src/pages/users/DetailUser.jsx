@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const DetailUser = () => {
   const { id } = useParams();
-  const { data: response, isLoading, isError } = useGetApiWithIdQuery(['api/users', id]);
+  const { data: response, isLoading, isError } = useGetApiWithIdQuery(['users', id]);
     const user = response; // Access the data property from the response
     
    

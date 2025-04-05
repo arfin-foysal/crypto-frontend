@@ -60,10 +60,10 @@ export const commonApi = server.injectEndpoints({
     updateApi: builder.mutation({
       query: (data) => {
         // data.body._method = "PUT";
-        data.body.append("_method", "PUT");
+        // data.body.append("_method", "PUT");
         return {
           url: data.end_point,
-          method: "POST",
+          method: "PUT",
           body: data.body,
         };
       },

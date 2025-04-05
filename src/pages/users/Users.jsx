@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { useGetApiQuery } from '@/store/api/commonSlice';
+import { useGetApiQuery, useDeleteApiMutation } from '../../store/api/commonSlice';
 import { Link } from 'react-router-dom';
-import { 
-  HomeIcon, 
-  PencilIcon, 
-  TrashIcon, 
+import {
+  HomeIcon,
+  PencilIcon,
+  TrashIcon,
   PlusIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ArrowDownTrayIcon,
   EyeIcon
 } from '@heroicons/react/24/outline';
 import Pagination from '../../components/common/Pagination';
 import TableSkeleton from '../../components/common/TableSkeleton';
+import toast from 'react-hot-toast';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export default function Users() {
 
@@ -24,11 +26,11 @@ export default function Users() {
   const [maxBalance, setMaxBalance] = useState('');
 
   // Update the query to include status filter
-  const { data: users, isLoading, isError } = useGetApiQuery({ 
-    url: `api/users?page=${page}&search=${search}&role=USER${statusFilter ? `&status=${statusFilter}` : ''}${
-      minBalance ? `&minBalance=${minBalance}` : ''}${maxBalance ? `&maxBalance=${maxBalance}` : ''}`, 
+  const { data: users, isLoading, isError } = useGetApiQuery({
+    url: `users?page=${page}&search=${search}&${statusFilter ? `&status=${statusFilter}` : ''}${minBalance ? `&minBalance=${minBalance}` : ''}${maxBalance ? `&maxBalance=${maxBalance}` : ''}`,
   });
 
+  const [deleteApi] = useDeleteApiMutation();
   // Add this function to handle status filter change
   const handleStatusFilterChange = (status) => {
     setStatusFilter(status);
@@ -49,6 +51,36 @@ export default function Users() {
     setMinBalance('');
     setMaxBalance('');
     setPage(1);
+  };
+
+  // Handle user deletion
+  const handleDelete = (id, name) => {
+    confirmAlert({
+      title: 'Confirm Deletion',
+      message: `Are you sure you want to delete user "${name}"?`,
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteApi({
+                end_point: `users/${id}`,
+                body:{}
+              }).unwrap();
+         
+              toast.success('User deleted successfully');
+            } catch (error) {
+              toast.error(error?.data?.errors || 'Failed to delete user');
+              console.error('Delete error:', error);
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => { }
+        }
+      ]
+    });
   };
 
   return (
@@ -94,8 +126,8 @@ export default function Users() {
             </div>
 
             {/* Actions */}
-            {/* <div className="flex items-center gap-3">
-            
+            <div className="flex items-center gap-3">
+
               <Link
                 to="/users/add"
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -103,7 +135,7 @@ export default function Users() {
                 <PlusIcon className="h-4 w-4 mr-2" />
                 Add User
               </Link>
-            </div> */}
+            </div>
           </div>
 
           {/* Filter Panel */}
@@ -243,9 +275,9 @@ export default function Users() {
         {/* Table with Loader */}
         <div className="overflow-x-auto">
           {isLoading ? (
-            <TableSkeleton 
-              columns={6} 
-              rows={5} 
+            <TableSkeleton
+              columns={6}
+              rows={5}
               showActions={true}
               imageColumn={true}
             />
@@ -266,14 +298,17 @@ export default function Users() {
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Country
                   </th>
-                  
+
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Balance
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Registration Date
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
                   <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -288,7 +323,7 @@ export default function Users() {
                       <div className="flex items-center">
                         <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                           {user.photo ? (
-                            <img src={user.photo} alt={user.full_name} className="h-8 w-8 rounded-full" />
+                            <img src={`${import.meta.env.VITE_MEDIA_URL}${user.photo}`} alt={user.full_name} className="h-8 w-8 rounded-full" />
                           ) : (
                             <span className="text-sm font-medium text-gray-600">
                               {user.full_name.charAt(0).toUpperCase()}
@@ -308,7 +343,7 @@ export default function Users() {
                         {user.country?.name || 'N/A'}
                       </div>
                     </td>
-                
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">
                         ${parseFloat(user.balance || 0).toFixed(2)}
@@ -320,12 +355,16 @@ export default function Users() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
-                        user.status === 'INACTIVE' ? 'bg-red-100 text-red-800' : 
-                        user.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${'bg-slate-300 text-gray-800'}`}>
+                        {user.role || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                        user.status === 'INACTIVE' ? 'bg-red-100 text-red-800' :
+                          user.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                        }`}>
                         {user.status || 'N/A'}
                       </span>
                     </td>
@@ -334,12 +373,15 @@ export default function Users() {
                         <Link to={`/users/${user.id}`} className="text-blue-600 hover:text-blue-900">
                           <EyeIcon className="h-5 w-5" />
                         </Link>
-                        {/* <Link to={`/users/edit/${user.id}`} className="text-indigo-600 hover:text-indigo-900">
+                        <Link to={`/users/edit/${user.id}`} className="text-indigo-600 hover:text-indigo-900">
                           <PencilIcon className="h-5 w-5" />
                         </Link>
-                        <button className="text-red-600 hover:text-red-900">
+                        <button
+                          onClick={() => handleDelete(user.id, user.full_name)}
+                          className="text-red-600 hover:text-red-900"
+                        >
                           <TrashIcon className="h-5 w-5" />
-                        </button> */}
+                        </button>
                       </div>
                     </td>
                   </tr>

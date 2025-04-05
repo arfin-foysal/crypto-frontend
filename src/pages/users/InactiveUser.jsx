@@ -50,7 +50,7 @@ export default function InactiveUsers() {
           onClick: async () => {
             try {
               await updateStatus({
-                end_point: `api/users/status/${id}`,
+                end_point: `users/status/${id}`,
                 body: { status: newStatus }
               }).unwrap();
               toast.success(`User successfully ${statusMessages[newStatus]}d`);
@@ -84,7 +84,7 @@ export default function InactiveUsers() {
 
   // Update the query to fetch INACTIVE users
   const { data: users, isLoading, isError } = useGetApiQuery({ 
-    url: `api/users?page=${page}&search=${search}&role=USER&status=INACTIVE${
+    url: `users?page=${page}&search=${search}&role=USER&status=INACTIVE${
       minBalance ? `&minBalance=${minBalance}` : ''}${maxBalance ? `&maxBalance=${maxBalance}` : ''}`, 
   });
 

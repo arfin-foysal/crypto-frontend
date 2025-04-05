@@ -13,7 +13,7 @@ import {
 } from 'react-icons/ai';
 import { IoIosArrowDropright } from "react-icons/io";
 import { menuItems } from '../../config/menuItems';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
 
 function MenuItem({ item, isOpen, activeSubmenu, setActiveSubmenu }) {
@@ -94,6 +94,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
   const dispatch = useDispatch();
   const [activeSubmenu, setActiveSubmenu] = useState(null);
   const location = useLocation();
+  const user=useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -161,7 +162,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
           </div>
           {isOpen && (
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-800">John Doe</p>
+              <p className="text-sm font-medium text-gray-800">{user?.full_name || 'John Doe'}</p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
           )}

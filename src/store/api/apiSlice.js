@@ -16,7 +16,7 @@ export const apiSlice = server.injectEndpoints({
       providesTags: ["Users"],
     }),
     getUserById: builder.query({
-      query: (id) => `/api/users/${id}`,
+      query: (id) => `/users/${id}`,
       providesTags: ["Users"],
     }),
     addUser: builder.mutation({

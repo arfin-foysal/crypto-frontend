@@ -1,7 +1,5 @@
 import Dashboard from '../pages/dashboard/Dashboard';
 
-import AddUser from '../pages/AddUser';
-import EditUser from '../pages/EditUser';
 import Users from '../pages/users/Users';
 import DetailUser from '../pages/users/DetailUser';
 import PendingUsers from '../pages/users/PendingUsers';
@@ -9,6 +7,8 @@ import InactiveUsers from '../pages/users/InactiveUser';
 import Withdraws from '../pages/withdraws/Withdraws';
 import SuspendedUsers from '../pages/users/SuspendedUsers';
 import ActiveUsers from '../pages/users/ActiveUsers';
+import AddUser from '../pages/users/AddUser';
+import EditUser from '../pages/users/EditUser';
 
 // Component mapping for string-based references
 const componentMap = {
@@ -24,6 +24,10 @@ export const routes = [
   {
     path: '/users',
     element: () => <Users />
+  },
+  {
+    path: '/users/add',
+    element: () => <AddUser />
   },
   {
     path: '/users/active',

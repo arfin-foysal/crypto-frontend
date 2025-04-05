@@ -56,7 +56,7 @@ export default function Withdraws() {
           onClick: async () => {
             try {
               await updateStatus({
-                end_point: `api/withdraws/status/${id}`,
+                end_point: `withdraws/status/${id}`,
                 body: { status: newStatus }
               }).unwrap();
               toast.success(`Withdrawal successfully ${statusMessages[newStatus]}d`);
@@ -75,7 +75,7 @@ export default function Withdraws() {
 
   // Construct API URL with all filters
   const { data: withdrawsData, isLoading, isError } = useGetApiQuery({ 
-    url: `api/withdraws?page=${page}&perPage=${perPage}${
+    url: `withdraws?page=${page}&perPage=${perPage}${
       search ? `&search=${search}` : ''}${
       statusFilter ? `&status=${statusFilter}` : ''}${
       feeType ? `&fee_type=${feeType}` : ''}${

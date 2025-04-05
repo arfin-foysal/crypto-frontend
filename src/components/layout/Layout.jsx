@@ -13,6 +13,7 @@ export default function Layout({ children, user }) {
     mobile: false,
     desktop: true
   });
+  
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ export default function Layout({ children, user }) {
                   <AiOutlineUser className="h-5 w-5 text-indigo-600" />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-gray-700 font-medium">{user?.name || 'John Doe'}</span>
+                  <span className="text-gray-700 font-medium">{user?.full_name || 'John Doe'}</span>
                   <AiOutlineDown
                     className={`h-4 w-4 text-gray-500 transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''
                       }`}

@@ -21,6 +21,7 @@ export const menuItems = [
         title: 'All Users', 
         path: '/users',
       },
+
       { 
         title: 'Active Users', 
         path: '/users/active',
