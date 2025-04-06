@@ -10,9 +10,11 @@ const validationSchema = Yup.object({
   // These fields match the backend Joi schema
   full_name: Yup.string()
     .min(3, 'Name must be at least 3 characters')
-    .max(50, 'Name must be less than 50 characters'),
+    .max(50, 'Name must be less than 50 characters')
+    .required('Name is required'),
   email: Yup.string()
-    .email('Invalid email address'),
+    .email('Invalid email address')
+    .required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .test('password-check', 'Password is required when changing password', function (value) {
@@ -177,7 +179,7 @@ export default function EditUser() {
             <Form className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name <span className='text-red-500'>*</span></label>
                   <Field
                     type="text"
                     name="full_name"
@@ -188,7 +190,7 @@ export default function EditUser() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className='text-red-500'>*</span></label>
                   <Field
                     type="email"
                     name="email"
@@ -317,7 +319,7 @@ export default function EditUser() {
                   disabled={isSubmitting}
                   className="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Updating...' : 'Update User'}
+                  {isSubmitting ? 'Updating...' : 'Submit'}
                 </button>
               </div>
             </Form>
