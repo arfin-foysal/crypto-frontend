@@ -111,7 +111,8 @@ export default function AddUser() {
             <Form className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name <span className='text-red-500'>*</span></label>
+           
                   <Field
                     type="text"
                     name="full_name"
@@ -122,7 +123,7 @@ export default function AddUser() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className='text-red-500'>*</span></label>
                   <Field
                     type="email"
                     name="email"
@@ -154,7 +155,7 @@ export default function AddUser() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Password <span className='text-red-500'>*</span></label>
                   <Field
                     type="password"
                     name="password"
@@ -165,7 +166,7 @@ export default function AddUser() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span className='text-red-500'>*</span></label>
                   <Field
                     type="password"
                     name="confirmPassword"
