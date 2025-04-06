@@ -46,6 +46,7 @@ export default function EditUser() {
     'users',
     id,
   ]);
+  
 
   const [updateUser] = useUpdateApiMutation();
   const [initialValues, setInitialValues] = useState({
@@ -62,16 +63,16 @@ export default function EditUser() {
   useEffect(() => {
     if (user) {
       setInitialValues({
-        full_name: user.full_name || '',
-        email: user.email || '',
+        full_name: user?.data?.full_name || '',
+        email: user?.data?.email || '',
         password: '',
         confirmPassword: '',
-        phone: user.phone || '',
-        dob: user.dob || '',
-        address: user.address || '',
-        status: user.status || 'PENDING',
-        role: user.role || 'USER',
-        photo: user.photo || ''
+        phone: user?.data?.phone || '',
+        dob: user?.data?.dob || '',
+        address: user?.data?.address || '',
+        status: user?.data?.status || 'PENDING',
+        role: user?.data?.role || 'USER',
+        photo: user?.data?.photo || ''
       });
     }
   }, [user]);

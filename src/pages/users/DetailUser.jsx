@@ -57,54 +57,54 @@ const DetailUser = () => {
           {/* User Header */}
           <div className="flex items-center gap-4 mb-6">
             <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
-              {user?.photo ? (
-                <img src={user.photo} alt={user.full_name} className="h-16 w-16 rounded-full object-cover" />
+              {user?.data?.photo ? (
+                <img src={user?.data?.photo} alt={user?.data?.full_name} className="h-16 w-16 rounded-full object-cover" />
               ) : (
                 <span className="text-2xl font-medium text-gray-600">
-                  {user?.full_name?.charAt(0).toUpperCase()}
+                  {user?.data?.full_name?.charAt(0).toUpperCase()}
                 </span>
               )}
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{user?.full_name}</h2>
-              <p className="text-sm text-gray-500">{user?.email}</p>
+              <h2 className="text-xl font-semibold text-gray-900">{user?.data?.full_name}</h2>
+              <p className="text-sm text-gray-500">{user?.data?.email}</p>
             </div>
           </div>
 
-          {/* User Details Grid */}
+          {/* user?.data? Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Status</h3>
                 <span className={`mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  user?.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
-                  user?.status === 'INACTIVE' ? 'bg-red-100 text-red-800' : 
-                  user?.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                  user?.data?.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
+                  user?.data?.status === 'INACTIVE' ? 'bg-red-100 text-red-800' : 
+                  user?.data?.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
                   'bg-gray-100 text-gray-800'
                 }`}>
-                  {user?.status || 'N/A'}
+                  {user?.data?.status || 'N/A'}
                 </span>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Country</h3>
-                <p className="mt-1 text-sm text-gray-900">{user?.country?.name || 'N/A'}</p>
+                <p className="mt-1 text-sm text-gray-900">{user?.data?.country?.name || 'N/A'}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Balance</h3>
-                <p className="mt-1 text-sm text-gray-900">${parseFloat(user?.balance || 0).toFixed(2)}</p>
+                <p className="mt-1 text-sm text-gray-900">${parseFloat(user?.data?.balance || 0).toFixed(2)}</p>
               </div>
             </div>
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Registration Date</h3>
                 <p className="mt-1 text-sm text-gray-900">
-                  {user?.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'}
+                  {user?.data?.created_at ? new Date(user?.data?.created_at).toLocaleString() : 'N/A'}
                 </p>
               </div>
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Last Updated</h3>
                 <p className="mt-1 text-sm text-gray-900">
-                  {user?.updated_at ? new Date(user.updated_at).toLocaleString() : 'N/A'}
+                  {user?.data?.updated_at ? new Date(user?.data?.updated_at).toLocaleString() : 'N/A'}
                 </p>
               </div>
             </div>

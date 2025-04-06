@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useGetApiQuery, useDeleteApiMutation } from '../../store/api/commonSlice';
+import { useGetApiQuery, useDeleteApiMutation, useUpdateApiJsonMutation } from '../../store/api/commonSlice';
 import { Link } from 'react-router-dom';
 import {
   HomeIcon,
@@ -31,6 +31,80 @@ export default function Users() {
   });
 
   const [deleteApi] = useDeleteApiMutation();
+  const [updateStatus] = useUpdateApiJsonMutation();
+
+  // User status constants
+  const USER_STATUS = {
+    PENDING: 'PENDING',
+    ACTIVE: 'ACTIVE',
+    INACTIVE: 'INACTIVE',
+    SUSPENDED: 'SUSPENDED'
+  };
+
+  // Handle user status update
+  const handleStatusUpdate = (id, currentStatus, userName) => {
+    // Create dropdown menu for status selection
+    confirmAlert({
+      title: 'Change User Status',
+      message: `Select a new status for user "${userName}":`,
+      customUI: ({ onClose }) => {
+        return (
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto">
+            <h2 className="text-xl font-bold mb-4">Change User Status</h2>
+            <p className="mb-4">Select a new status for user "{userName}":</p>
+            <div className="mb-4">
+              <select
+                id="status-select"
+                className="w-full p-2 border rounded-lg"
+                defaultValue={currentStatus}
+              >
+                {Object.values(USER_STATUS).map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={onClose}
+                className="px-4 py-2 text-sm text-gray-700 bg-white border rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const newStatus = document.getElementById('status-select').value;
+                  if (newStatus !== currentStatus) {
+                    updateUserStatus(id, newStatus, onClose);
+                  } else {
+                    onClose();
+                  }
+                }}
+                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+  // Function to call the API to update user status
+  const updateUserStatus = async (id, newStatus, onClose) => {
+    try {
+      await updateStatus({
+        end_point: `users/status/${id}`,
+        body: { status: newStatus }
+      }).unwrap();
+      toast.success(`User status updated to ${newStatus}`);
+      onClose();
+    } catch (error) {
+      toast.error(error?.data?.errors || 'Failed to update user status');
+      console.error('Status update error:', error);
+      onClose();
+    }
+  };
   // Add this function to handle status filter change
   const handleStatusFilterChange = (status) => {
     setStatusFilter(status);
@@ -53,6 +127,7 @@ export default function Users() {
     setPage(1);
   };
 
+
   // Handle user deletion
   const handleDelete = (id, name) => {
     confirmAlert({
@@ -65,9 +140,9 @@ export default function Users() {
             try {
               await deleteApi({
                 end_point: `users/${id}`,
-                body:{}
+                body: {}
               }).unwrap();
-         
+
               toast.success('User deleted successfully');
             } catch (error) {
               toast.error(error?.data?.errors || 'Failed to delete user');
@@ -379,8 +454,18 @@ export default function Users() {
                         <button
                           onClick={() => handleDelete(user.id, user.full_name)}
                           className="text-red-600 hover:text-red-900"
+                          title="Delete User"
                         >
                           <TrashIcon className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => handleStatusUpdate(user.id, user.status, user.full_name)}
+                          className="text-purple-600 hover:text-purple-900"
+                          title="Change Status"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                          </svg>
                         </button>
                       </div>
                     </td>

@@ -10,10 +10,26 @@ import ActiveUsers from '../pages/users/ActiveUsers';
 import AddUser from '../pages/users/AddUser';
 import EditUser from '../pages/users/EditUser';
 
+// Bank Management
+import Banks from '../pages/banks/Banks';
+import AddBank from '../pages/banks/AddBank';
+import EditBank from '../pages/banks/EditBank';
+import ViewBank from '../pages/banks/ViewBank';
+
+// Bank Account Management
+import BankAccounts from '../pages/bank-accounts/BankAccounts';
+import AddBankAccount from '../pages/bank-accounts/AddBankAccount';
+import EditBankAccount from '../pages/bank-accounts/EditBankAccount';
+import ViewBankAccount from '../pages/bank-accounts/ViewBankAccount';
+
 // Component mapping for string-based references
 const componentMap = {
   Users,
   AddUser,
+  Banks,
+  AddBank,
+  BankAccounts,
+  AddBankAccount,
 };
 
 export const routes = [
@@ -28,6 +44,16 @@ export const routes = [
   {
     path: '/users/add',
     element: () => <AddUser />
+  },
+  {
+    path: '/users/edit/:id',
+    element: () => <EditUser />,
+    hideInMenu: true
+  },
+  {
+    path: '/users/:id',
+    element: () => <DetailUser />,
+    hideInMenu: true
   },
   {
     path: '/users/active',
@@ -47,25 +73,56 @@ export const routes = [
     element: () => <SuspendedUsers />
   },
   {
-    path: '/Withdraw',
+    path: '/withdraw',
     element: () => <Withdraws />
   },
-  
+
+  // Bank Management Routes
+  {
+    path: '/banks',
+    element: () => <Banks />
+  },
+  {
+    path: '/banks/add',
+    element: () => <AddBank />
+  },
+  {
+    path: '/banks/:id',
+    element: () => <ViewBank />,
+    hideInMenu: true
+  },
+  {
+    path: '/banks/edit/:id',
+    element: () => <EditBank />,
+    hideInMenu: true
+  },
+
+  // Bank Account Management Routes
+  {
+    path: '/bank-accounts',
+    element: () => <BankAccounts />
+  },
+  {
+    path: '/bank-accounts/add',
+    element: () => <AddBankAccount />
+  },
+  {
+    path: '/bank-accounts/:id',
+    element: () => <ViewBankAccount />,
+    hideInMenu: true
+  },
+  {
+    path: '/bank-accounts/edit/:id',
+    element: () => <EditBankAccount />,
+    hideInMenu: true
+  },
+
   {
     path: '/settings',
     element: () => <h1 className="text-2xl font-bold">Settings</h1>
   },
   // Dynamic routes
-  {
-    path: '/users/edit/:id',
-    element: () => <EditUser />,
-    hideInMenu: true
-  },
-  {
-    path: '/users/:id',
-    element: () => <DetailUser />,
-    hideInMenu: true
-  }
+
 ];
 
 // Helper function to get all routes

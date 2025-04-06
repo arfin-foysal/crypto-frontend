@@ -1,78 +1,70 @@
-import { 
-  AiOutlineHome, 
-  AiOutlineUser, 
-  AiOutlineShoppingCart, 
-  AiOutlineBarChart, 
-  AiOutlineSetting, 
-  AiOutlineMoneyCollect
-} from 'react-icons/ai';
+import {
+  AiOutlineHome,
+  AiOutlineUser,
+  AiOutlineShoppingCart,
+  AiOutlineBarChart,
+  AiOutlineSetting,
+  AiOutlineMoneyCollect,
+  AiOutlineBank,
+} from "react-icons/ai";
 
 export const menuItems = [
   {
-    title: 'Dashboard',
+    title: "Dashboard",
     icon: AiOutlineHome,
-    path: '/dashboard',
+    path: "/dashboard",
   },
   {
-    title: 'User Management',
+    title: "User Management",
     icon: AiOutlineUser,
     submenu: [
-      { 
-        title: 'All Users', 
-        path: '/users',
+      {
+        title: "All Users",
+        path: "/users",
       },
 
-      { 
-        title: 'Active Users', 
-        path: '/users/active',
+      {
+        title: "Active Users",
+        path: "/users/active",
       },
-      { 
-        title: 'Pending Users', 
-        path: '/users/pending',
+      {
+        title: "Pending Users",
+        path: "/users/pending",
       },
-      { 
-        title: 'Inactive Users', 
-        path: '/users/inactive',
-      },
-    
-      { 
-        title: 'Suspended Users', 
-        path: '/users/suspended',
+      {
+        title: "Inactive Users",
+        path: "/users/inactive",
       },
 
+      {
+        title: "Suspended Users",
+        path: "/users/suspended",
+      },
     ],
   },
-  // {
-  //   title: 'Products',
-  //   icon: AiOutlineShoppingCart,
-  //   submenu: [
-  //     { 
-  //       title: 'All Products', 
-  //       path: '/products',
-  //     },
-  //     { 
-  //       title: 'Add Product', 
-  //       path: '/products/add',
-  //     },
-  //     { 
-  //       title: 'Categories', 
-  //       path: '/products/categories',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'Analytics',
-  //   icon: AiOutlineBarChart,
-  //   path: '/analytics',
-  // },
   {
-    title: 'Withdraws',
-    icon: AiOutlineMoneyCollect,
-    path: '/withdraw',
+    title: "Banking",
+    icon: AiOutlineBank,
+    submenu: [
+      {
+        title: "Banks",
+        path: "/banks",
+      },
+
+      {
+        title: "Bank Accounts",
+        path: "/bank-accounts",
+      },
+    ],
   },
   {
-    title: 'Settings',
+    title: "Withdraws",
+    icon: AiOutlineMoneyCollect,
+    path: "/withdraw",
+  },
+  {
+    title: "Settings",
     icon: AiOutlineSetting,
-    path: '/settings',
+    path: "/settings",
   },
 ];
